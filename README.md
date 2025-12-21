@@ -115,11 +115,4 @@ git push -u origin main
 - Use banco gerenciado e configure `DATABASE_URL` com credenciais seguras.
 - Habilite HTTPS (provedores como Render, Fly, Vercel e Netlify já fornecem).
 
-**Próximos passos sugeridos**
-- Gerar `requirements.txt` atual com `pip freeze > requirements.txt`.
-- Adicionar `.gitignore` (se desejar eu crio).
-- Se desejar, eu crio o `Dockerfile` e o `Procfile` agora.
-
----
-
 Arquivo criado automaticamente por assistente.
