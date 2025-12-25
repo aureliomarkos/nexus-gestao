@@ -20,6 +20,10 @@ SessionLocal = sessionmaker(
     class_=Session
 )
 
+# Criamos as tabelas no banco de dados
+Base.metadata.create_all(engine)
+
+
 def get_db():
     """Fornece uma sessão do banco de dados para as rotas do FastAPI."""
     db = SessionLocal()
