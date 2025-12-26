@@ -119,6 +119,26 @@
         </div>
     </div>
 
+        <!-- Modal de Ajuda -->
+        <div id="help-modal" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+                <div class="flex items-start justify-between">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-3">Ajuda - Acesso ao Painel</h2>
+                    <button id="close-help" class="text-gray-500 hover:text-gray-800">&times;</button>
+                </div>
+                <div class="text-sm text-gray-700 space-y-3">
+                    <p>Se você já tem um usuário válido, faça o login com suas credenciais.</p>
+                    <p>Para criar uma conta: use o link <strong>"Criar novo usuário"</strong> abaixo do botão de entrar.</p>
+                    <p>Esqueceu a senha? Contate o administrador do sistema para redefinição.</p>
+                    <p>Se houver problemas de conexão, verifique se o servidor está no ar e se a URL da API está correta.</p>
+                    <p class="text-xs text-gray-500">Contato de suporte: <strong>admin@seudominio.com</strong> (substitua pelo e-mail real do administrador)</p>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button id="help-ok" class="px-4 py-2 rounded-md primary-bg text-white">Fechar</button>
+                </div>
+            </div>
+        </div>
+
     <script>
         const form = document.getElementById('login-form');
         const alertBox = document.getElementById('login-alert');
@@ -169,6 +189,10 @@
         const registerForm = document.getElementById('register-form');
         const registerAlert = document.getElementById('register-alert');
         const cancelRegister = document.getElementById('cancel-register');
+        const helpLink = document.getElementById('help-link');
+        const helpModal = document.getElementById('help-modal');
+        const helpOk = document.getElementById('help-ok');
+        const closeHelp = document.getElementById('close-help');
 
         createLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -185,6 +209,30 @@
         cancelRegister.addEventListener('click', () => {
             closeRegisterModal();
         });
+
+        // Mostrar modal de ajuda
+        if (helpLink && helpModal) {
+            helpLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                helpModal.classList.remove('hidden');
+                helpModal.classList.add('flex');
+            });
+        }
+
+        function closeHelpModal() {
+            helpModal.classList.add('hidden');
+            helpModal.classList.remove('flex');
+        }
+
+        if (helpOk) helpOk.addEventListener('click', closeHelpModal);
+        if (closeHelp) closeHelp.addEventListener('click', closeHelpModal);
+
+        // fechar modal de ajuda ao clicar fora do conteúdo
+        if (helpModal) {
+            helpModal.addEventListener('click', (ev) => {
+                if (ev.target === helpModal) closeHelpModal();
+            });
+        }
 
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
