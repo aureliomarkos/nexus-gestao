@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Form
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
@@ -33,7 +33,11 @@ def create_user(user_in: UsuarioCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/token")
-def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    remember: str | None = Form(None),
+    db: Session = Depends(get_db)
+):
     # form_data.username corresponde ao campo `nome` no model
     user = db.query(UsuarioModel).filter((UsuarioModel.nome == form_data.username) | (UsuarioModel.email == form_data.username)).first()
     if not user:
@@ -41,7 +45,16 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     if not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciais inválidas")
 
-    access_token_expires = timedelta(minutes=60 * 24)
+    # Se o usuário marcou "Lembrar", aumenta a validade do token (ex.: 30 dias)
+    remember_flag = False
+    if remember:
+        try:
+            if str(remember).lower() in ("true", "on", "1", "yes"):
+                remember_flag = True
+        except Exception:
+            remember_flag = False
+
+    access_token_expires = timedelta(days=7) if remember_flag else timedelta(minutes=60 * 24)
     token = create_access_token(data={"sub": str(user.id_usuario)}, expires_delta=access_token_expires)
     return {"access_token": token, "token_type": "bearer"}
 

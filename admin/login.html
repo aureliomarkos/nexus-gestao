@@ -26,6 +26,33 @@
     <div class="w-full max-w-md p-6">
         <div class="bg-white rounded-xl shadow-lg p-8">
             <div class="flex items-center mb-6">
+
+    <script>
+        // Auto-login: se existir token no localStorage, valida-o chamando /auth/me
+        (async function tryAutoLogin() {
+            try {
+                const token = localStorage.getItem('access_token');
+                if (!token) return; // sem token, permanece na tela de login
+
+                // Tenta validar o token no backend
+                const resp = await fetch(`${API_BASE_URL}/auth/me`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                });
+
+                if (resp.ok) {
+                    // Token válido: redireciona ao dashboard
+                    window.location.href = './dashboard-admin.html';
+                } else {
+                    // Token inválido/expirado: remove e permanece no login
+                    try { localStorage.removeItem('access_token'); } catch (e) { }
+                }
+            } catch (e) {
+                // Em caso de erro de rede ou acesso, não impede que o usuário faça login manualmente
+                console.debug('Auto-login falhou:', e);
+            }
+        })();
+    </script>
                 <div class="w-12 h-12 rounded-md primary-bg flex items-center justify-center text-white mr-4">
                     <i data-lucide="shield" class="w-6 h-6"></i>
                 </div>
@@ -46,7 +73,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <label class="inline-flex items-center text-sm text-gray-600">
-                        <input type="checkbox" id="remember" class="mr-2" /> Lembrar
+                        <input type="checkbox" id="remember" name="remember" value="true" class="mr-2" /> Lembrar
                     </label>
                     <a href="#" id="help-link" class="text-sm text-orange-600 hover:underline">Precisa de ajuda?</a>
                 </div>
