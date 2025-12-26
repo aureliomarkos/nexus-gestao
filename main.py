@@ -1,5 +1,7 @@
 # main.py
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from config import DATABASE_URL, ENCRYPTION_KEY
 from routers import (
@@ -50,6 +52,21 @@ app.include_router(endereco.router)
 app.include_router(servicos_projeto.router)
 app.include_router(itens_infraestrutura.router)
 app.include_router(auth.router)
+
+# Serve arquivos estáticos da pasta `admin` em /admin
+app.mount("/admin", StaticFiles(directory="admin", html=True), name="admin")
+
+
+# Se alguém acessar /admin (sem arquivo), redireciona para a tela de login
+@app.get("/admin", include_in_schema=False)
+def admin_index():
+    return RedirectResponse("/admin/login.html")
+
+
+# Rota alternativa para abrir o login sem o sufixo .html
+@app.get("/admin/login", include_in_schema=False)
+def admin_login():
+    return FileResponse("admin/login.html")
 
 
 # Configuração OBRIGATÓRIA para permitir que o frontend acesse a API
