@@ -10,6 +10,7 @@ from routers import (
     itens_infraestrutura
 )
 from routers import auth
+from database import init_db
 
 
 # Validação Crítica
@@ -25,6 +26,11 @@ app = FastAPI(
     version="1.0.0",
     description="Backend completo para gerenciamento de Clientes, Desenvolvedores, Projetos e Infraestrutura, com criptografia de segredos."
 )
+
+
+@app.on_event("startup")
+def startup_event():
+    init_db()
 
 
 # CORS

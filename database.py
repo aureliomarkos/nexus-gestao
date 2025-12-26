@@ -20,9 +20,6 @@ SessionLocal = sessionmaker(
     class_=Session
 )
 
-# Criamos as tabelas no banco de dados
-Base.metadata.create_all(engine)
-
 
 def get_db():
     """Fornece uma sessão do banco de dados para as rotas do FastAPI."""
@@ -31,3 +28,26 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def init_db():
+    """Importa os módulos de modelos e cria as tabelas no banco se não existirem.
+
+    Ao importar explicitamente os módulos que definem os modelos, garantimos que
+    as classes estão registradas em `Base.metadata` antes de chamar
+    `create_all`.
+    """
+    # Importar módulos que declaram modelos para registrá-los em Base.metadata
+    try:
+        import models.cliente
+        import models.desenvolvedor
+        import models.endereco
+        import models.itens_infraestrutura
+        import models.servico_projeto
+        import models.usuario
+    except Exception:
+        # Import silencioso: se algum modelo não existir, ainda tentamos criar o restante
+        pass
+
+    # Cria as tabelas declarativas que ainda não existem
+    Base.metadata.create_all(bind=engine)
