@@ -44,7 +44,6 @@ app.add_middleware(
     allow_headers=["*"],            # Permite todos os cabeçalhos
 )
 
-
 # Incluir routers
 app.include_router(cliente.router)
 app.include_router(desenvolvedor.router)
@@ -63,7 +62,7 @@ def admin_index():
     return RedirectResponse("/admin/")
 
 
-# Rota alternativa para abrir o login sem o sufixo .html
+# Rota alternativa para abrir o login
 @app.get("/admin/login", include_in_schema=False)
 def admin_login():
     return FileResponse("admin/index.html")
