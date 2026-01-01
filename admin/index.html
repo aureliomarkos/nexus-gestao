@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,17 +12,22 @@
     <style>
         /* Estilos customizados para a fonte e transições */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* blue-50 */
+            background-color: #f8fafc;
+            /* blue-50 */
             text-size-adjust: 100%;
         }
+
         .sidebar {
             transition: width 0.3s ease;
         }
+
         .content {
             transition: margin-left 0.3s ease;
         }
+
         .input-field {
             padding: 0.75rem;
             border: 1px solid #e5e7eb;
@@ -29,63 +35,150 @@
             transition: border-color 0.2s, box-shadow 0.2s;
             width: 100%;
         }
+
         .input-field:focus {
-            border-color: #f97316; /* orange-500 */
+            border-color: #f97316;
+            /* orange-500 */
             box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
             outline: none;
         }
+
         /* Cor primária Laranja */
-        .primary-bg { background-color: #ea580c; /* orange-700 */ }
-        .primary-hover-bg:hover { background-color: #c2410c; /* orange-800 */ }
-        .primary-text { color: #ea580c; }
-        .active-tab { background-color: #c2410c; } /* orange-800 */
-        .sidebar-header-bg { background-color: #9a3412; } /* orange-900 */
+        .primary-bg {
+            background-color: #ea580c;
+            /* orange-700 */
+        }
+
+        .primary-hover-bg:hover {
+            background-color: #c2410c;
+            /* orange-800 */
+        }
+
+        .primary-text {
+            color: #ea580c;
+        }
+
+        .active-tab {
+            background-color: #c2410c;
+        }
+
+        /* orange-800 */
+        .sidebar-header-bg {
+            background-color: #9a3412;
+        }
+
+        /* orange-900 */
     </style>
 </head>
+
 <body>
 
     <!-- Variável Global de Configuração da API -->
     <script>
-        // *** IMPORTANTE ***: Defina a URL base do seu servidor FastAPI aqui.
-        const API_BASE_URL = "http://163.176.237.220:8000";
-    </script>
+        // Prioriza a origem atual para facilitar deploy, mas mantém o IP como fallback se estiver em localhost
+        const API_BASE_URL = window.location.origin
 
-    <script>
-        // Protege o dashboard: se não houver token, redireciona para a página de login
-        (function ensureAuthenticated() {
-            try {
-                const token = localStorage.getItem('access_token');
-                if (!token) {
-                    // redireciona para a página de login
-                    window.location.href = './login.html';
+        // Gerencia a visibilidade entre Login e Dashboard
+        function updateScreenState() {
+            const token = localStorage.getItem('access_token');
+            const dashboard = document.getElementById('app-dashboard');
+            const login = document.getElementById('app-login');
+
+            if (token) {
+                dashboard.classList.remove('hidden');
+                login.classList.add('hidden');
+                // Se o dashboard acabou de aparecer, carregamos os dados iniciais
+                if (typeof switchTab === 'function' && !dashboard.dataset.loaded) {
+                    switchTab(currentTab);
+                    dashboard.dataset.loaded = "true";
                 }
-            } catch (e) {
-                // Em caso de erro no acesso ao localStorage, redireciona também
-                window.location.href = './login.html';
+            } else {
+                dashboard.classList.add('hidden');
+                login.classList.remove('hidden');
+                dashboard.dataset.loaded = "";
+                if (typeof lucide !== 'undefined') lucide.createIcons();
             }
-        })();
+        }
     </script>
 
-    <div id="app" class="flex min-h-screen">
+    <!-- Contêiner de Login -->
+    <div id="app-login" class="hidden min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md p-6">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 rounded-md primary-bg flex items-center justify-center text-white mr-4">
+                        <i data-lucide="shield" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800">Nexus GCI</h1>
+                        <p class="text-sm text-gray-500">Painel administrativo</p>
+                    </div>
+                </div>
+
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Usuário</label>
+                        <input name="username" type="text" required class="input-field" placeholder="seu.usuario" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                        <input name="password" type="password" required class="input-field" placeholder="********" />
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="inline-flex items-center text-sm text-gray-600">
+                            <input type="checkbox" id="remember" name="remember" value="true" class="mr-2" /> Lembrar
+                        </label>
+                        <a href="#" id="help-link-login" class="text-sm text-orange-600 hover:underline">Precisa de
+                            ajuda?</a>
+                    </div>
+
+                    <div>
+                        <button type="submit"
+                            class="w-full primary-bg primary-hover-bg text-white font-semibold py-3 rounded-lg">Entrar</button>
+                    </div>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <a href="#" id="create-user-link" class="text-sm text-gray-600 hover:underline">Criar novo
+                        usuário</a>
+                </div>
+
+                <div id="login-alert" class="hidden mt-4 text-sm text-red-600"></div>
+
+                <p class="mt-6 text-center text-sm text-gray-500">&copy; Nexus GCI</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contêiner do Dashboard -->
+    <div id="app-dashboard" class="flex min-h-screen hidden">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar sidebar-header-bg text-white w-64 flex flex-col fixed h-full z-20">
             <div class="p-6 text-2xl font-extrabold text-white shadow-lg sidebar-header-bg">
                 Nexus Admin
             </div>
             <nav class="flex-grow p-4 space-y-2">
-                <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-orange-700 transition duration-150 active-tab" data-tab="desenvolvedores">
+                <a href="#"
+                    class="nav-item flex items-center p-3 rounded-lg hover:bg-orange-700 transition duration-150 active-tab"
+                    data-tab="desenvolvedores">
                     <i data-lucide="code" class="w-5 h-5 mr-3"></i>
                     Desenvolvedores
                 </a>
-                <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-orange-700 transition duration-150" data-tab="clientes">
+                <a href="#"
+                    class="nav-item flex items-center p-3 rounded-lg hover:bg-orange-700 transition duration-150"
+                    data-tab="clientes">
                     <i data-lucide="briefcase" class="w-5 h-5 mr-3"></i>
                     Clientes
                 </a>
-                <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-orange-700 transition duration-150" data-tab="projetos">
+                <a href="#"
+                    class="nav-item flex items-center p-3 rounded-lg hover:bg-orange-700 transition duration-150"
+                    data-tab="projetos">
                     <i data-lucide="kanban" class="w-5 h-5 mr-3"></i>
                     Projetos
                 </a>
-                <a href="#" class="nav-item flex items-center p-3 rounded-lg hover:bg-orange-700 transition duration-150" data-tab="infraestrutura">
+                <a href="#"
+                    class="nav-item flex items-center p-3 rounded-lg hover:bg-orange-700 transition duration-150"
+                    data-tab="infraestrutura">
                     <i data-lucide="server" class="w-5 h-5 mr-3"></i>
                     Infraestrutura
                 </a>
@@ -103,18 +196,22 @@
                     <h1 id="page-title" class="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Desenvolvedores</h1>
                     <div class="flex items-center space-x-4">
                         <div id="view-toggle-container" class="flex">
-                            <button id="toggle-grid" class="view-toggle flex items-center primary-bg text-white px-3 py-1 rounded-l-lg text-sm font-semibold shadow-md transition duration-300">
+                            <button id="toggle-grid"
+                                class="view-toggle flex items-center primary-bg text-white px-3 py-1 rounded-l-lg text-sm font-semibold shadow-md transition duration-300">
                                 <i data-lucide="grid" class="w-4 h-4 mr-1"></i> Grid
                             </button>
-                            <button id="toggle-table" class="view-toggle flex items-center bg-gray-200 text-gray-700 px-3 py-1 rounded-r-lg text-sm font-semibold shadow-md transition duration-300 hover:bg-gray-300">
+                            <button id="toggle-table"
+                                class="view-toggle flex items-center bg-gray-200 text-gray-700 px-3 py-1 rounded-r-lg text-sm font-semibold shadow-md transition duration-300 hover:bg-gray-300">
                                 <i data-lucide="table" class="w-4 h-4 mr-1"></i> Tabela
                             </button>
                         </div>
-                        <button id="add-new-btn" class="flex items-center primary-bg text-white px-4 py-2 rounded-lg font-semibold shadow-md primary-hover-bg transition duration-300">
+                        <button id="add-new-btn"
+                            class="flex items-center primary-bg text-white px-4 py-2 rounded-lg font-semibold shadow-md primary-hover-bg transition duration-300">
                             <i data-lucide="plus-circle" class="w-5 h-5 mr-2"></i>
                             Adicionar Novo
                         </button>
-                        <button id="logout-btn" title="Sair" class="flex items-center bg-gray-100 text-gray-800 px-3 py-2 rounded-lg font-medium hover:bg-gray-200 transition duration-200">
+                        <button id="logout-btn" title="Sair"
+                            class="flex items-center bg-gray-100 text-gray-800 px-3 py-2 rounded-lg font-medium hover:bg-gray-200 transition duration-200">
                             <i data-lucide="log-out" class="w-4 h-4 mr-2"></i>
                             Sair
                         </button>
@@ -126,7 +223,8 @@
             <div id="alert-container" class="mb-4"></div>
 
             <!-- Indicador de Carregamento -->
-            <div id="loading-indicator" class="hidden flex items-center justify-center p-12 text-gray-600 bg-white rounded-xl shadow">
+            <div id="loading-indicator"
+                class="hidden flex items-center justify-center p-12 text-gray-600 bg-white rounded-xl shadow">
                 <i data-lucide="loader-2" class="w-6 h-6 mr-2 animate-spin text-orange-600"></i>
                 <span>Carregando dados...</span>
             </div>
@@ -135,47 +233,105 @@
             <div id="tab-content">
                 <!-- Conteúdo das listas será injetado aqui -->
                 <section id="tab-desenvolvedores" class="module-content">
-                    <div id="dev-list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                    <div id="dev-list-container"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
                 </section>
                 <section id="tab-clientes" class="module-content hidden">
-                    <div id="client-list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                    <div id="client-list-container"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
                 </section>
                 <section id="tab-projetos" class="module-content hidden">
-                    <div id="project-list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                    <div id="project-list-container"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
                 </section>
                 <section id="tab-infraestrutura" class="module-content hidden">
-                    <div id="infra-list-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                    <div id="infra-list-container"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
                 </section>
             </div>
         </main>
     </div>
 
     <!-- MODAL PRINCIPAL REUTILIZÁVEL (CRUD) -->
-    <div id="main-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex justify-center items-center p-4">
+    <div id="main-modal"
+        class="hidden fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex justify-center items-center p-4">
         <div class="bg-white w-full max-w-4xl rounded-xl shadow-2xl p-6 relative overflow-y-auto max-h-[90vh]">
-            <h2 id="modal-title" class="text-2xl font-semibold primary-text mb-6 border-b pb-3">Adicionar/Editar Item</h2>
-            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition text-3xl">&times;</button>
-            
+            <h2 id="modal-title" class="text-2xl font-semibold primary-text mb-6 border-b pb-3">Adicionar/Editar Item
+            </h2>
+            <button id="close-modal-btn"
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition text-3xl">&times;</button>
+
             <form id="item-form" class="space-y-6">
                 <!-- Conteúdo do Formulário será injetado aqui pelo JS -->
                 <div id="form-fields-container"></div>
-                
-                <button type="submit" id="submit-form-btn" class="w-full primary-bg primary-hover-bg text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center mt-6">
+
+                <button type="submit" id="submit-form-btn"
+                    class="w-full primary-bg primary-hover-bg text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center mt-6">
                     <i data-lucide="save" class="w-5 h-5 mr-2"></i>
                     <span id="submit-form-text">Salvar Item</span>
                 </button>
             </form>
         </div>
     </div>
-    
+
     <!-- Modal de Confirmação para Exclusão (Customizado) -->
-    <div id="confirm-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex justify-center items-center p-4">
+    <div id="confirm-modal"
+        class="hidden fixed inset-0 bg-gray-900 bg-opacity-70 z-50 flex justify-center items-center p-4">
         <div class="bg-white w-full max-w-sm rounded-xl shadow-2xl p-6 relative text-center">
             <h3 class="text-xl font-bold text-red-600 mb-4">Confirmação de Exclusão</h3>
-            <p id="confirm-modal-text" class="text-gray-700 mb-6">Tem certeza que deseja excluir <span class="font-bold"></span>? Esta ação não pode ser desfeita.</p>
+            <p id="confirm-modal-text" class="text-gray-700 mb-6">Tem certeza que deseja excluir <span
+                    class="font-bold"></span>? Esta ação não pode ser desfeita.</p>
             <div class="flex justify-center space-x-4">
-                <button id="cancel-delete-btn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancelar</button>
-                <button id="execute-delete-btn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Excluir</button>
+                <button id="cancel-delete-btn"
+                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancelar</button>
+                <button id="execute-delete-btn"
+                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modais de Login/Registro -->
+    <div id="register-modal" class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center p-4 z-[60]">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Criar novo usuário</h2>
+            <form id="register-form" class="space-y-3">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                    <input name="nome" type="text" required class="input-field" placeholder="nome de usuário" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input name="email" type="email" required class="input-field" placeholder="seu@email.com" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <input name="password" type="password" required class="input-field" placeholder="********" />
+                </div>
+                <div class="flex items-center justify-end space-x-2">
+                    <button type="button" id="cancel-register"
+                        class="px-4 py-2 rounded-md border text-sm">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 rounded-md primary-bg text-white text-sm">Criar</button>
+                </div>
+            </form>
+            <div id="register-alert" class="hidden mt-3 text-sm"></div>
+        </div>
+    </div>
+
+    <div id="help-modal-login"
+        class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center p-4 z-[60]">
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+            <div class="flex items-start justify-between">
+                <h2 class="text-lg font-semibold text-gray-800 mb-3">Ajuda - Acesso ao Painel</h2>
+                <button id="close-help-login" class="text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <div class="text-sm text-gray-700 space-y-3">
+                <p>Se você já tem um usuário válido, faça o login com suas credenciais.</p>
+                <p>Para criar uma conta: use o link <strong>"Criar novo usuário"</strong>.</p>
+                <p>Esqueceu a senha? Contate o administrador do sistema.</p>
+                <p class="text-xs text-gray-500">Suporte: <strong>aureliomarkos@yahoo.com</strong></p>
+            </div>
+            <div class="flex justify-end mt-4">
+                <button id="help-ok-login" class="px-4 py-2 rounded-md primary-bg text-white">Fechar</button>
             </div>
         </div>
     </div>
@@ -192,7 +348,7 @@
         const viewToggleContainer = document.getElementById('view-toggle-container');
         const toggleGridBtn = document.getElementById('toggle-grid');
         const toggleTableBtn = document.getElementById('toggle-table');
-        
+
         const mainModal = document.getElementById('main-modal');
         const modalTitle = document.getElementById('modal-title');
         const closeModalBtn = document.getElementById('close-modal-btn');
@@ -208,14 +364,14 @@
         // --- Variáveis de Estado ---
         let currentTab = 'desenvolvedores';
         let currentView = 'grid'; // 'grid' ou 'table'
-        let editingItemId = null; 
+        let editingItemId = null;
         let itemToDelete = { id: null, nome: null, endpoint: null, containerId: null };
 
         // --- Mapeamento de Módulos (Baseado no arquivo instruções gerar dashboard-admin.txt) ---
         const MODULE_MAP = {
-            desenvolvedores: { 
+            desenvolvedores: {
                 endpoint: 'desenvolvedores', // Note: Sem barra inicial
-                containerId: 'dev-list-container', 
+                containerId: 'dev-list-container',
                 pk: 'id_desenvolvedor',
                 singular: 'Desenvolvedor',
                 formFields: [
@@ -229,8 +385,8 @@
                 addressFields: true
             },
             clientes: {
-                endpoint: 'clientes', 
-                containerId: 'client-list-container', 
+                endpoint: 'clientes',
+                containerId: 'client-list-container',
                 pk: 'id_cliente',
                 singular: 'Cliente',
                 formFields: [
@@ -239,7 +395,7 @@
                     { label: "Telefone", sql: "telefone", type: "text" },
                     { label: "Pessoa Contato", sql: "pessoa_contato", type: "text" },
                     { label: "Documento Fiscal", sql: "documento_fiscal", type: "text" },
-                    { label: "Status Relacionamento", sql: "status_relacionamento", type: "text"  },
+                    { label: "Status Relacionamento", sql: "status_relacionamento", type: "text" },
                     { label: "Segmento", sql: "segmento", type: "text" },
                     { label: "Origem", sql: "origem", type: "text" },
                     { label: "Observações", sql: "observacoes", type: "textarea" },
@@ -247,8 +403,8 @@
                 addressFields: true
             },
             infraestrutura: {
-                endpoint: 'infra', 
-                containerId: 'infra-list-container', 
+                endpoint: 'infra',
+                containerId: 'infra-list-container',
                 pk: 'id_item',
                 singular: 'Item de Infraestrutura',
                 formFields: [
@@ -266,8 +422,8 @@
                 addressFields: false
             },
             projetos: {
-                endpoint: 'projetos', 
-                containerId: 'project-list-container', 
+                endpoint: 'projetos',
+                containerId: 'project-list-container',
                 pk: 'id_servico',
                 singular: 'Projeto/Serviço',
                 formFields: [
@@ -316,9 +472,9 @@
          * Função genérica para chamadas de API (AGORA USANDO FETCH REAL).
          */
         const apiCall = async (endpoint, config = {}) => {
-            
+
             loadingIndicator.classList.remove('hidden');
-            
+
             const url = `${API_BASE_URL}/${endpoint}`;
             const headers = {
                 'Content-Type': 'application/json',
@@ -335,12 +491,12 @@
 
             try {
                 const response = await fetch(url, { ...config, headers });
-                
+
                 if (!response.ok) {
                     // Tenta ler o erro do corpo da resposta, se disponível
                     const errorText = await response.text();
                     let errorMessage = `Erro HTTP ${response.status} ao acessar ${url}`;
-                    
+
                     try {
                         const errorJson = JSON.parse(errorText);
                         errorMessage = errorJson.detail || errorJson.message || errorMessage;
@@ -348,7 +504,7 @@
                         // Se não for JSON, usa o status e URL
                         errorMessage = `${errorMessage}. Corpo da Resposta: ${errorText.substring(0, 100)}...`;
                     }
-                    
+
                     throw new Error(errorMessage);
                 }
 
@@ -371,54 +527,54 @@
         /**
          * Busca dados da API e preenche um campo SELECT no modal.
          */
-    const fillRemoteSelect = async (fieldConfig, selectedValue) => {
-    const { sql, remoteOptions } = fieldConfig;
-    const selectElement = itemForm.querySelector(`[name="${sql}"]`);
+        const fillRemoteSelect = async (fieldConfig, selectedValue) => {
+            const { sql, remoteOptions } = fieldConfig;
+            const selectElement = itemForm.querySelector(`[name="${sql}"]`);
 
-    console.log(`[LOG-FILL] Tentando preencher campo ${fieldConfig.label} do endpoint: /${remoteOptions.endpoint}`); // LOG 1
-    if (!selectElement || !remoteOptions) return;
-    
-    selectElement.innerHTML = `<option value="" disabled selected>Carregando ${fieldConfig.label}...</option>`;
-    selectElement.disabled = true;
+            console.log(`[LOG-FILL] Tentando preencher campo ${fieldConfig.label} do endpoint: /${remoteOptions.endpoint}`); // LOG 1
+            if (!selectElement || !remoteOptions) return;
 
-    try {
-        const items = await apiCall(remoteOptions.endpoint, { method: 'GET' });
-        console.log(`[LOG 14 - DADOS BRUTOS] ${fieldConfig.label}:`, items);
+            selectElement.innerHTML = `<option value="" disabled selected>Carregando ${fieldConfig.label}...</option>`;
+            selectElement.disabled = true;
 
-        if (!Array.isArray(items)) {
-             throw new Error('Resposta da API não é um Array (Lista de itens).');
-        }
-        
-        console.log(`[LOG-FILL] Sucesso ao carregar ${items.length} itens para ${fieldConfig.label}.`); // LOG 2
-        
-        let optionsHtml = `<option value="" disabled ${!selectedValue ? 'selected' : ''}>Selecione um ${fieldConfig.label}</option>`;
-        
-        items.forEach(item => {
-            const value = item[remoteOptions.valueKey];
-            // Tenta labelKey, depois campos comuns, depois qualquer string disponível
-            let label = item[remoteOptions.labelKey] || item.nome || item.email;
-            if (!label) {
-                const firstString = Object.values(item).find(v => typeof v === 'string' && v.trim().length > 0);
-                label = firstString || '';
+            try {
+                const items = await apiCall(remoteOptions.endpoint, { method: 'GET' });
+                console.log(`[LOG 14 - DADOS BRUTOS] ${fieldConfig.label}:`, items);
+
+                if (!Array.isArray(items)) {
+                    throw new Error('Resposta da API não é um Array (Lista de itens).');
+                }
+
+                console.log(`[LOG-FILL] Sucesso ao carregar ${items.length} itens para ${fieldConfig.label}.`); // LOG 2
+
+                let optionsHtml = `<option value="" disabled ${!selectedValue ? 'selected' : ''}>Selecione um ${fieldConfig.label}</option>`;
+
+                items.forEach(item => {
+                    const value = item[remoteOptions.valueKey];
+                    // Tenta labelKey, depois campos comuns, depois qualquer string disponível
+                    let label = item[remoteOptions.labelKey] || item.nome || item.email;
+                    if (!label) {
+                        const firstString = Object.values(item).find(v => typeof v === 'string' && v.trim().length > 0);
+                        label = firstString || '';
+                    }
+                    if (!label) {
+                        console.warn(`[LOG-FILL] item sem rótulo encontrado para ${fieldConfig.label}:`, item);
+                        label = 'Sem nome';
+                    }
+                    const isSelected = selectedValue == value ? 'selected' : '';
+                    optionsHtml += `<option value="${value}" ${isSelected}>${label}</option>`;
+                });
+
+                selectElement.innerHTML = optionsHtml;
+                selectElement.disabled = false;
+
+            } catch (error) {
+                console.error(`[LOG-FILL] ERRO FATAL ao carregar opções para ${fieldConfig.label}:`, error); // LOG 3
+                selectElement.innerHTML = `<option value="" selected>Erro ao carregar opções</option>`;
+                selectElement.disabled = true;
+                throw error;
             }
-            if (!label) {
-                console.warn(`[LOG-FILL] item sem rótulo encontrado para ${fieldConfig.label}:`, item);
-                label = 'Sem nome';
-            }
-            const isSelected = selectedValue == value ? 'selected' : ''; 
-            optionsHtml += `<option value="${value}" ${isSelected}>${label}</option>`;
-        });
-        
-        selectElement.innerHTML = optionsHtml;
-        selectElement.disabled = false;
-
-    } catch (error) {
-        console.error(`[LOG-FILL] ERRO FATAL ao carregar opções para ${fieldConfig.label}:`, error); // LOG 3
-        selectElement.innerHTML = `<option value="" selected>Erro ao carregar opções</option>`;
-        selectElement.disabled = true;
-        throw error;
-    }
-    };
+        };
         // --- FUNÇÕES DE RENDERIZAÇÃO DE LISTA ---
 
         const formatDate = (dateString) => {
@@ -427,7 +583,7 @@
                 // Formato ISO 8601 para Date
                 const date = new Date(dateString);
                 // Verifica se a data é válida
-                if (isNaN(date)) return dateString; 
+                if (isNaN(date)) return dateString;
                 return date.toLocaleDateString('pt-BR');
             } catch {
                 return dateString;
@@ -442,7 +598,7 @@
                 else if (text === 'Pendente' || text === 'Freelancer') color = 'bg-yellow-100 text-yellow-800';
                 else if (text === 'Cancelado') color = 'bg-red-100 text-red-800';
             } else if (type === 'critico') {
-                 color = text ? 'bg-red-600 text-white' : 'bg-gray-400 text-white';
+                color = text ? 'bg-red-600 text-white' : 'bg-gray-400 text-white';
             }
             return `<span class="px-2 py-0.5 rounded-full text-xs font-medium ${color}">${text}</span>`;
         };
@@ -450,7 +606,7 @@
         const renderCard = (item, module) => {
             const moduleInfo = MODULE_MAP[module];
             // O ID deve ser recuperado usando a chave primária do módulo
-            const id = item[moduleInfo.pk] || 'undefined'; 
+            const id = item[moduleInfo.pk] || 'undefined';
             const address = item.endereco_obj || {};
             const localidade = (address.cidade && address.estado) ? `${address.cidade}, ${address.estado}` : 'N/A';
             const primaryName = item.nome || item.titulo || item.descricao || `Item ${id}`;
@@ -506,12 +662,12 @@
                         ${details}
                     </div>
 
-                    ${moduleInfo.addressFields ? 
-                        `<p class="flex items-start text-gray-500 text-xs pt-2 border-t border-orange-50 mt-2">
+                    ${moduleInfo.addressFields ?
+                    `<p class="flex items-start text-gray-500 text-xs pt-2 border-t border-orange-50 mt-2">
                             <i data-lucide="map-pin" class="w-4 h-4 mr-2 mt-0.5 flex-shrink-0 primary-text"></i>
                             <span>${localidade}</span>
                         </p>` : ''
-                    }
+                }
 
                     <div class="mt-4 pt-3 border-t border-gray-100 flex justify-end space-x-2">
                         <button class="edit-btn text-orange-500 hover:text-orange-700 text-sm font-medium" data-item-id="${id}" data-item-name="${primaryName}">Editar</button>
@@ -520,10 +676,10 @@
                 </div>
             `;
         };
-        
+
         const renderTable = (items, module) => {
             if (!Array.isArray(items) || items.length === 0) return '';
-            
+
             let headers = [];
             let rows = '';
 
@@ -597,10 +753,10 @@
                 </div>
             `;
         };
-        
+
         const renderActionButtons = (id, name) => {
             // Garante que o ID é uma string, crucial para data-attributes
-            const itemId = String(id); 
+            const itemId = String(id);
             return `<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                 <button class="edit-btn text-orange-500 hover:text-orange-700" data-item-id="${itemId}" data-item-name="${name}">Editar</button>
                 <button class="delete-btn text-red-500 hover:text-red-700" data-item-id="${itemId}" data-item-name="${name}">Apagar</button>
@@ -614,10 +770,10 @@
         const updateModuleView = (items, module) => {
             const moduleInfo = MODULE_MAP[module];
             const container = document.getElementById(moduleInfo.containerId);
-            
+
             container.innerHTML = '';
             container.classList.remove('grid', 'overflow-x-auto');
-            
+
             if (!Array.isArray(items) || items.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-full text-center p-10 bg-white rounded-xl shadow border-l-4 border-orange-400">
@@ -647,9 +803,9 @@
         const loadModuleData = async (module) => {
             const moduleInfo = MODULE_MAP[module];
             const container = document.getElementById(moduleInfo.containerId);
-            
+
             // Limpa o conteúdo e mostra o indicador de carregamento
-            container.innerHTML = ''; 
+            container.innerHTML = '';
             loadingIndicator.classList.remove('hidden');
 
             try {
@@ -657,7 +813,7 @@
                 const items = await apiCall(moduleInfo.endpoint, { method: 'GET' });
                 updateModuleView(items, module);
             } catch (error) {
-                 // A mensagem de erro já foi exibida pelo apiCall
+                // A mensagem de erro já foi exibida pelo apiCall
                 container.innerHTML = `
                     <div class="col-span-full text-center p-10 bg-red-100 rounded-xl shadow border-l-4 border-red-500">
                         <i data-lucide="alert-triangle" class="w-12 h-12 mx-auto text-red-600 mb-3"></i>
@@ -666,7 +822,7 @@
                     </div>
                 `;
             } finally {
-                 loadingIndicator.classList.add('hidden');
+                loadingIndicator.classList.add('hidden');
             }
         };
 
@@ -675,7 +831,7 @@
          */
         const switchTab = (tabId) => {
             currentTab = tabId;
-            
+
             // 1. Atualiza o título e esconde/mostra conteúdo
             tabContents.forEach(content => content.classList.add('hidden'));
             const tabElement = document.getElementById(`tab-${tabId}`);
@@ -694,7 +850,7 @@
 
             // 3. Configura o botão "Adicionar Novo" 
             addDevBtn.onclick = () => openModal(tabId);
-            
+
             // 4. Carrega os dados
             loadModuleData(tabId);
         };
@@ -708,7 +864,7 @@
         const generateFormHTML = (module) => {
             const moduleInfo = MODULE_MAP[module];
             let outputHtml = '';
-            
+
             // Variáveis para armazenar o HTML separadamente
             let mainFieldsHtml = '';
             let addressFieldsHtml = '';
@@ -718,17 +874,17 @@
 
             // --- INÍCIO DO WRAPPER DE COLUNAS ---
             outputHtml += '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
-            
+
             // 2. Processar campos específicos do módulo (formFields) PRIMEIRO
             moduleInfo.formFields.forEach(field => {
                 const baseProps = `name="${field.sql}" class="input-field" ${field.required ? 'required' : ''}`;
                 let inputHtml = '';
-                let wrapperClasses = ''; 
+                let wrapperClasses = '';
 
                 if (field.type === 'text' || field.type === 'email' || field.type === 'number' || field.type === 'url' || field.type === 'date') {
                     const stepAttr = field.type === 'number' && field.step ? `step="${field.step}"` : '';
                     const valueAttr = field.type === 'number' && field.value ? `value="${field.value}"` : '';
-                    
+
                     // Special handling for secret field: render as password with reveal button
                     if (field.sql === 'referencia_senha') {
                         inputHtml = `<div>
@@ -766,15 +922,15 @@
                 } else if (field.type === 'select') {
                     let optionsHtml = '';
                     let disabled = '';
-                    
+
                     if (field.remoteOptions) {
                         // Trata selects que carregarão opções via API
                         optionsHtml = `<option value="" disabled selected>Carregando ${field.label}...</option>`;
                         disabled = 'disabled';
                     } else if (field.options && Array.isArray(field.options)) {
                         // Trata selects com opções fixas (local)
-                        optionsHtml = `<option value="" disabled selected>Selecione</option>` + 
-                                       field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+                        optionsHtml = `<option value="" disabled selected>Selecione</option>` +
+                            field.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
                     } else {
                         // Fallback
                         optionsHtml = `<option value="" disabled selected>Nenhuma opção disponível</option>`;
@@ -792,7 +948,7 @@
 
                 mainFieldsHtml += `<div class="mb-4 ${wrapperClasses}">${inputHtml}</div>`;
             });
-            
+
             // Adiciona os campos principais à saída HTML
             outputHtml += mainFieldsHtml;
 
@@ -801,7 +957,7 @@
             if (moduleInfo.addressFields) {
                 // Fechamos a grade dos campos principais e iniciamos a seção de endereço
                 addressFieldsHtml += '</div><hr class="my-6"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
-                
+
                 const addressFields = [
                     { label: "CEP", sql: "cep", type: "text", required: true },
                     { label: "Rua", sql: "rua", type: "text", required: true },
@@ -820,14 +976,14 @@
                         </div>
                     `;
                 });
-                
+
                 // Adiciona os campos de endereço à saída HTML
                 outputHtml += addressFieldsHtml;
             }
-            
+
             // --- FIM DO WRAPPER DE COLUNAS ---
             outputHtml += '</div>';
-            
+
             return outputHtml;
         };
 
@@ -838,22 +994,22 @@
             const moduleInfo = MODULE_MAP[module];
             editingItemId = id;
             itemForm.setAttribute('data-module', module);
-            
+
             console.log(`[LOG-MODAL] Iniciando openModal para módulo: ${module}, ID: ${id}`); // LOG 4
-            
+
             // 1. Gera e injeta o formulário dinâmico
             formFieldsContainer.innerHTML = generateFormHTML(module);
-            lucide.createIcons(); 
+            lucide.createIcons();
 
             // 2. Abre o modal IMEDIATAMENTE. O conteúdo será preenchido a seguir
             // Esta correção é essencial para evitar o travamento do modal.
-            mainModal.classList.remove('hidden'); 
+            mainModal.classList.remove('hidden');
             console.log(`[LOG-MODAL] Modal principal exibido.`); // LOG 5
-            
+
             // 3. Configura título e botão
             let itemToEdit = {};
             const isEditing = !!id;
-            
+
             if (isEditing) {
                 // MODO EDIÇÃO: Define título de carregamento e busca dados
                 modalTitle.textContent = `Carregando ${moduleInfo.singular}...`;
@@ -888,9 +1044,9 @@
                 submitFormText.textContent = `Salvar ${moduleInfo.singular}`;
                 itemForm.reset();
             }
-            
+
             // --- INÍCIO DO PREENCHIMENTO E CARREGAMENTO DE OPÇÕES ---
-            
+
             // 4. Preenche o ID escondido (PK real)
             itemForm.querySelector('[name="id"]').value = itemToEdit[moduleInfo.pk] || '';
 
@@ -919,23 +1075,23 @@
                     }
                 }
             });
-            
+
             console.log(`[LOG-MODAL] ${remoteLoadPromises.length} campos remotos encontrados.`) // LOG 8
 
             // 5. Aguarda o preenchimento de todas as opções remotas
             if (remoteLoadPromises.length > 0) {
-                 // Mostra indicador de carregamento
+                // Mostra indicador de carregamento
                 const loadingModal = document.createElement('div');
                 // Z-50 garante que o overlay fique por cima do form
                 loadingModal.className = 'absolute inset-0 bg-white bg-opacity-80 z-50 flex items-center justify-center rounded-xl';
                 loadingModal.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 mr-2 animate-spin primary-text"></i> <span class="text-gray-700">Carregando listas...</span>';
-                
+
                 // Anexa o overlay ao div principal do modal (o pai do itemForm)
-                itemForm.parentElement.appendChild(loadingModal); 
+                itemForm.parentElement.appendChild(loadingModal);
                 lucide.createIcons();
-                
+
                 console.log(`[LOG-MODAL] Iniciando carregamento Promise.all de listas remotas.`); // LOG 9
-                
+
                 try {
                     // Aguarda todas as chamadas de API de Clientes e Desenvolvedores
                     await Promise.all(remoteLoadPromises);
@@ -948,7 +1104,7 @@
                     console.log(`[LOG-MODAL] Overlay de carregamento removido.`); // LOG 12
                 }
             }
-            
+
             // --- Anexa listeners para botões de mostrar/ocultar senha (se existirem) ---
             (() => {
                 const toggleButtons = itemForm.querySelectorAll('.toggle-secret-btn');
@@ -1010,7 +1166,7 @@
                     });
                 });
             })();
-            
+
             // 6. Preenche campos de endereço (endereco_obj)
             if (moduleInfo.addressFields && itemToEdit.endereco_obj) {
                 const address = itemToEdit.endereco_obj;
@@ -1025,7 +1181,7 @@
             // 7. Atualiza o título final
             const primaryName = itemToEdit.nome || itemToEdit.titulo || itemToEdit.descricao || (id ? ('ID: ' + id) : '');
             modalTitle.textContent = isEditing ? `Editar ${moduleInfo.singular}: ${primaryName}` : `Adicionar Novo ${moduleInfo.singular}`;
-            
+
             console.log(`[LOG-MODAL] Finalizado openModal para ${module}.`); // LOG 13
         };
 
@@ -1034,7 +1190,7 @@
          */
         const submitFormHandler = async (e) => {
             e.preventDefault();
-            
+
             const submitBtnElement = document.getElementById('submit-form-btn');
             submitBtnElement.disabled = true;
             const processingSpan = document.getElementById('submit-form-text');
@@ -1053,13 +1209,13 @@
 
             // 1. Coleta e formata os dados
             const pkValue = formData.get('id'); // ID/PK do item, se houver
-            
+
             for (let [key, value] of formData.entries()) {
                 const element = itemForm.querySelector(`[name="${key}"]`);
-                
+
                 // Ignora o campo 'id' (PK) se for nulo (modo criação)
-                if (key === 'id') continue; 
-                
+                if (key === 'id') continue;
+
                 if (element && element.getAttribute('data-address-field') !== null) {
                     // 1.1 Coleta dados de Endereço (objeto aninhado)
                     addressData[key] = value;
@@ -1091,15 +1247,15 @@
             const method = pkValue ? 'PUT' : 'POST';
             // PUT: /desenvolvedores/123 | POST: /desenvolvedores
             const endpoint = pkValue ? `${moduleInfo.endpoint}/${pkValue}` : moduleInfo.endpoint;
-            
+
             try {
                 await apiCall(endpoint, {
                     method: method,
                     body: JSON.stringify(itemData)
                 });
-                
+
                 showAlert(`${moduleInfo.singular} ${pkValue ? 'atualizado(a)' : 'criado(a)'} com sucesso!`, 'success');
-                
+
                 // Reset State and UI
                 editingItemId = null;
                 mainModal.classList.add('hidden');
@@ -1128,28 +1284,143 @@
         const deleteItem = async () => {
             const { id, nome, endpoint } = itemToDelete;
             const moduleInfo = MODULE_MAP[currentTab];
-            
+
             confirmModal.classList.add('hidden');
             itemToDelete.id = null;
 
             try {
                 // DELETE: /desenvolvedores/123
                 await apiCall(`${endpoint}/${id}`, { method: 'DELETE' });
-                
+
                 showAlert(`${moduleInfo.singular} '${nome}' excluído(a) com sucesso.`, 'success');
-                await loadModuleData(currentTab); 
+                await loadModuleData(currentTab);
             } catch (error) {
                 showAlert(`Falha ao excluir o ${moduleInfo.singular} '${nome}'.`, 'error');
             }
         };
-        
+
         // --- LISTENERS DE EVENTOS ---
 
         // 1. Inicialização
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons(); 
-            switchTab('desenvolvedores'); 
+            lucide.createIcons();
+            updateScreenState(); // Verifica se está logado e mostra a tela correta
         });
+
+        // --- LÓGICA DE LOGIN E REGISTRO ---
+        const loginForm = document.getElementById('login-form');
+        const loginAlert = document.getElementById('login-alert');
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                loginAlert.classList.add('hidden');
+                const formData = new FormData(loginForm);
+
+                try {
+                    const resp = await fetch(`${API_BASE_URL}/auth/token`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!resp.ok) {
+                        loginAlert.textContent = 'Credenciais inválidas';
+                        loginAlert.classList.remove('hidden');
+                        return;
+                    }
+
+                    const data = await resp.json();
+                    if (!data.access_token) {
+                        loginAlert.textContent = 'Erro no servidor';
+                        loginAlert.classList.remove('hidden');
+                        return;
+                    }
+
+                    localStorage.setItem('access_token', data.access_token);
+                    updateScreenState();
+                } catch (err) {
+                    console.error(err);
+                    loginAlert.textContent = 'Erro de conexão';
+                    loginAlert.classList.remove('hidden');
+                }
+            });
+        }
+
+        // Handlers para modal de registro e ajuda
+        const createLink = document.getElementById('create-user-link');
+        const registerModal = document.getElementById('register-modal');
+        const registerForm = document.getElementById('register-form');
+        const registerAlert = document.getElementById('register-alert');
+        const cancelRegister = document.getElementById('cancel-register');
+        const helpLinkLogin = document.getElementById('help-link-login');
+        const helpModalLogin = document.getElementById('help-modal-login');
+        const helpOkLogin = document.getElementById('help-ok-login');
+        const closeHelpLogin = document.getElementById('close-help-login');
+
+        if (createLink) {
+            createLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                registerAlert.classList.add('hidden');
+                registerModal.classList.remove('hidden');
+                registerModal.classList.add('flex');
+            });
+        }
+
+        function closeRegisterModal() {
+            registerModal.classList.add('hidden');
+            registerModal.classList.remove('flex');
+        }
+
+        if (cancelRegister) cancelRegister.addEventListener('click', closeRegisterModal);
+
+        if (helpLinkLogin) {
+            helpLinkLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                helpModalLogin.classList.remove('hidden');
+                helpModalLogin.classList.add('flex');
+            });
+        }
+
+        function closeHelpModalLogin() {
+            helpModalLogin.classList.add('hidden');
+            helpModalLogin.classList.remove('flex');
+        }
+
+        if (helpOkLogin) helpOkLogin.addEventListener('click', closeHelpModalLogin);
+        if (closeHelpLogin) closeHelpLogin.addEventListener('click', closeHelpModalLogin);
+
+        if (registerForm) {
+            registerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                registerAlert.classList.add('hidden');
+                const data = Object.fromEntries(new FormData(registerForm).entries());
+
+                try {
+                    const resp = await fetch(`${API_BASE_URL}/auth/users/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (resp.status === 201) {
+                        registerAlert.textContent = 'Usuário criado com sucesso!';
+                        registerAlert.classList.remove('hidden', 'text-red-600');
+                        registerAlert.classList.add('text-green-600');
+                        setTimeout(() => closeRegisterModal(), 1500);
+                        return;
+                    }
+
+                    const err = await resp.json().catch(() => ({}));
+                    registerAlert.textContent = err.detail || 'Erro ao criar usuário';
+                    registerAlert.classList.remove('hidden', 'text-green-600');
+                    registerAlert.classList.add('text-red-600');
+                } catch (error) {
+                    registerAlert.textContent = 'Erro de conexão';
+                    registerAlert.classList.remove('hidden');
+                    registerAlert.classList.add('text-red-600');
+                }
+            });
+        }
 
         // 2. Navegação na Sidebar
         navItems.forEach(item => {
@@ -1164,7 +1435,7 @@
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
                 try { localStorage.removeItem('access_token'); } catch (e) { /* ignore */ }
-                window.location.href = './login.html';
+                updateScreenState();
             });
         }
 
@@ -1172,7 +1443,7 @@
         closeModalBtn.addEventListener('click', () => mainModal.classList.add('hidden'));
         cancelDeleteBtn.addEventListener('click', () => confirmModal.classList.add('hidden'));
         executeDeleteBtn.addEventListener('click', deleteItem);
-        
+
         // 4. Submissão do Formulário
         itemForm.addEventListener('submit', submitFormHandler);
 
@@ -1181,16 +1452,16 @@
             container.addEventListener('click', (e) => {
                 const target = e.target;
                 const button = target.closest('.edit-btn, .delete-btn');
-                
+
                 if (button) {
                     const id = button.getAttribute('data-item-id');
                     const name = button.getAttribute('data-item-name');
                     const module = currentTab;
-                    
+
                     if (id && id !== 'undefined' && name) {
                         if (button.classList.contains('edit-btn')) {
                             // O ID aqui é a chave primária (e.g., id_desenvolvedor)
-                            openModal(module, id); 
+                            openModal(module, id);
                         } else if (button.classList.contains('delete-btn')) {
                             const moduleInfo = MODULE_MAP[module];
                             itemToDelete = { id: id, nome: name, endpoint: moduleInfo.endpoint };
@@ -1214,7 +1485,7 @@
             toggleTableBtn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
             loadModuleData(currentTab);
         });
-        
+
         toggleTableBtn.addEventListener('click', () => {
             if (currentView === 'table') return;
             currentView = 'table';
@@ -1224,7 +1495,8 @@
             toggleGridBtn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
             loadModuleData(currentTab);
         });
-        
+
     </script>
 </body>
+
 </html>

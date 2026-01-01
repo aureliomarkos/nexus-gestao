@@ -60,26 +60,15 @@ app.mount("/admin", StaticFiles(directory="admin", html=True), name="admin")
 # Se alguém acessar /redireciona para a tela de login
 @app.get("/", include_in_schema=False)
 def admin_index():
-    return RedirectResponse("/admin/login.html")
+    return RedirectResponse("/admin/")
 
 
 # Rota alternativa para abrir o login sem o sufixo .html
 @app.get("/admin/login", include_in_schema=False)
 def admin_login():
-    return FileResponse("admin/login.html")
+    return FileResponse("admin/index.html")
 
 
-# Configuração OBRIGATÓRIA para permitir que o frontend acesse a API
-"""
-origins = [
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-    # Adicione a URL onde você está testando o arquivo HTML se for diferente
-    "*"  # Permite todas as origens (ideal para desenvolvimento)
-]
-"""
-
-
-@app.get("/", tags=["Saúde"], summary="Verifica a saúde da API")
+@app.get("/health", tags=["Saúde"], summary="Verifica a saúde da API")
 def read_root():
     return {"status": "OK", "message": "API GCI (FastAPI) está em execução."}
