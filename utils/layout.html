@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - Desenvolvedores Overview | Nexus</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f77c18",
+                        "primary-600": "#ea580c",
+                        "background-light": "#f8f7f5",
+                        "background-dark": "#23180f",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sidebar-item-active {
+            @apply bg-primary/10 text-primary border-r-4 border-primary;
+        }::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            @apply bg-slate-200 dark:bg-zinc-800 rounded-full;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-hidden">
+<div class="flex h-screen overflow-hidden">
+<aside class="w-72 bg-white dark:bg-zinc-900 border-r border-slate-200 dark:border-zinc-800 flex flex-col z-20">
+<div class="p-6 flex items-center gap-3">
+<div class="size-10 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-2xl">hub</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-none">Nexus</h1>
+<p class="text-xs text-slate-500 dark:text-zinc-400 font-medium">Infrastructure Management</p>
+</div>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-semibold">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 text-primary rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">group</span>
+<span class="text-sm font-semibold">Desenvolvedores</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">person_pin</span>
+<span class="text-sm font-semibold">Clientes</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+<span class="text-sm font-semibold">Projetos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">dns</span>
+<span class="text-sm font-semibold">Infraestrutura</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-100 dark:border-zinc-800 mt-auto">
+<div class="flex items-center gap-3 px-3 py-2">
+<div class="size-10 rounded-full bg-slate-200 dark:bg-zinc-700 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDW_VkoxkwnpOGK9CHB1S1H_7VxwAqq-cAmfV-Dv--k3u0ZoJedtjNJE0XVPzQaxNB2DH8WVjcFoNCU0XvqqSaYzkX8EK-wvgfu69pH9vPOfEDyIYxYw2J46NezHpAU-drem-bhdu3FlW2UrfGX6Iw02v5hlDKL3Ky8IUGJk0ca4R6w1rbhyz-6AsemzzEM8XicaiZTnWtnIjOI5c7hXExQ48Go5S0AWBbfzO0qUXMDUfm3WBDnDbZLS5NGsxlpmJVYP9_NGN7S9A')"></div>
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">Admin Nexus</p>
+<p class="text-xs text-slate-500 truncate">admin@nexus.io</p>
+</div>
+<button class="ml-auto text-slate-400">
+<span class="material-symbols-outlined text-xl">settings</span>
+</button>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col overflow-hidden relative">
+<header class="h-16 bg-white dark:bg-zinc-900 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between px-8 z-10">
+<div class="w-96">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-full bg-slate-50 dark:bg-zinc-800 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-slate-400" placeholder="Buscar desenvolvedores..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="size-10 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="size-10 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<div class="h-6 w-px bg-slate-200 dark:bg-zinc-700 mx-2"></div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-primary/90 transition-all">
+<span class="material-symbols-outlined text-lg">add</span>
+                    Adicionar Desenvolvedor
+                </button>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-8 pb-24 bg-background-light dark:bg-background-dark">
+<div class="flex items-end justify-between mb-8">
+<div>
+<h2 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Desenvolvedores</h2>
+<p class="text-slate-500 dark:text-zinc-400 mt-1">Gerencie a equipe técnica e alocações do Nexus.</p>
+</div>
+<div class="flex bg-slate-200/50 dark:bg-zinc-800 p-1 rounded-lg">
+<button class="flex items-center gap-2 px-4 py-1.5 rounded-md bg-white dark:bg-zinc-700 shadow-sm text-sm font-semibold text-slate-900 dark:text-white">
+<span class="material-symbols-outlined text-lg">grid_view</span>
+                        Grid
+                    </button>
+<button class="flex items-center gap-2 px-4 py-1.5 rounded-md text-slate-500 dark:text-zinc-400 text-sm font-semibold hover:text-slate-700">
+<span class="material-symbols-outlined text-lg">table_rows</span>
+                        Tabela
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+<div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-slate-200 dark:border-zinc-800 hover:shadow-lg transition-shadow group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-full border-4 border-slate-50 dark:border-zinc-800 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDWiw8skzVzrV0SzjfYFQvU9zIwvQxrdw7oSuBQvXW_smTxf2TZiXJWMi3jGSfmhPFtWE6_2tlf4wvTS_odNU-qGFmHLGhGe4JyY7GIA9WI8BXwWhZisVIHriwUNb5kWhDAzx7B-gjRDG2y3d9YljBNqX2WdA2j0EICP0fvOwXk5mwYZ_SNZsTmkk8swfZXuUUO8xK7ZXNpwv_BwV-8r4kPazHjSPdeswki40jeWG9S22HWbzrPXPE1RNhnigBWg0lsc7Rf3Jm6pQ')"></div>
+<span class="px-2.5 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded">PJ</span>
+</div>
+<div class="mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Alexandre Silva</h3>
+<p class="text-sm text-slate-500 dark:text-zinc-400">alexandre@nexus.com</p>
+</div>
+<div class="space-y-2 mb-6 border-t border-slate-50 dark:border-zinc-800 pt-4">
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">payments</span>
+<span class="font-medium">R$ 85,00/hr</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">call</span>
+<span class="font-medium text-slate-700 dark:text-zinc-300">(11) 98765-4321</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">location_on</span>
+<span>São Paulo, SP</span>
+</div>
+</div>
+<div class="flex items-center gap-2 border-t border-slate-50 dark:border-zinc-800 pt-4">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-slate-50 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-sm font-bold hover:bg-primary/10 hover:text-primary transition-all">
+<span class="material-symbols-outlined text-lg">edit</span> Editar
+                        </button>
+<button class="size-9 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-zinc-800 text-red-500 hover:bg-red-50 transition-all">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-slate-200 dark:border-zinc-800 hover:shadow-lg transition-shadow group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-full border-4 border-slate-50 dark:border-zinc-800 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuABom2ua-jNYowJiqufmc1Cy3UG7Cgp-1FyCvsFHRMHsfZKcVjLuKP3yqn-1Grax7VufD4yHvN9jLDuU7ig6veXrS0ZxKr0m9N0O_zmMZAEfbtULSVDAT7n_rsYLTegjlI1amHRYqHmXtlywK8iI_QeKPOjESlbtBPf0L1V34VOxqmc6HSLujiCCK9yqzkRrYE-UitBgpXeTJJH5k1QGqgi6aLdItbECMZXRhj-xnopejbpkxMRhMq2e6ID111eNNBb-TW3cMqu5g')"></div>
+<span class="px-2.5 py-1 bg-blue-100 text-blue-600 text-[10px] font-bold uppercase tracking-wider rounded">CLT</span>
+</div>
+<div class="mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Mariana Costa</h3>
+<p class="text-sm text-slate-500 dark:text-zinc-400">mariana@nexus.com</p>
+</div>
+<div class="space-y-2 mb-6 border-t border-slate-50 dark:border-zinc-800 pt-4">
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">payments</span>
+<span class="font-medium">R$ 95,00/hr</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">call</span>
+<span class="font-medium text-slate-700 dark:text-zinc-300">(41) 99888-7766</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">location_on</span>
+<span>Curitiba, PR</span>
+</div>
+</div>
+<div class="flex items-center gap-2 border-t border-slate-50 dark:border-zinc-800 pt-4">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-slate-50 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-sm font-bold hover:bg-primary/10 hover:text-primary transition-all">
+<span class="material-symbols-outlined text-lg">edit</span> Editar
+                        </button>
+<button class="size-9 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-zinc-800 text-red-500 hover:bg-red-50 transition-all">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-slate-200 dark:border-zinc-800 hover:shadow-lg transition-shadow group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-full border-4 border-slate-50 dark:border-zinc-800 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDcnCTbU_rcu59vUvOByLSXTqpg5nFWoZGUnwyM4jOmvo5sq6G5fXsgq2DckIben95E0jOAR_ijWmH5QjS_AL55GeQPgE4L0BsEyR-HhVJ1hl7rQ9R_p8Z9w70z427Hx_GDGV94V4mM4Tcj3pRlQNy-V7F15W49B5X3GMdgm9J6IjMlAF0WRU4lGtsuId-fIrK9TarAkgmuWHgs3qmpQN2fvlI9aLCALJQZcjnn-Tz3YnttOFypp3m6RWIrkdU7XiiFQsmctPaeew')"></div>
+<span class="px-2.5 py-1 bg-green-100 text-green-600 text-[10px] font-bold uppercase tracking-wider rounded">FREELANCE</span>
+</div>
+<div class="mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Ricardo Oliveira</h3>
+<p class="text-sm text-slate-500 dark:text-zinc-400">ricardo@nexus.com</p>
+</div>
+<div class="space-y-2 mb-6 border-t border-slate-50 dark:border-zinc-800 pt-4">
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">payments</span>
+<span class="font-medium">R$ 75,00/hr</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">call</span>
+<span class="font-medium text-slate-700 dark:text-zinc-300">(31) 97766-5544</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">location_on</span>
+<span>Belo Horizonte, MG</span>
+</div>
+</div>
+<div class="flex items-center gap-2 border-t border-slate-50 dark:border-zinc-800 pt-4">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-slate-50 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-sm font-bold hover:bg-primary/10 hover:text-primary transition-all">
+<span class="material-symbols-outlined text-lg">edit</span> Editar
+                        </button>
+<button class="size-9 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-zinc-800 text-red-500 hover:bg-red-50 transition-all">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-zinc-900 p-5 rounded-xl border border-slate-200 dark:border-zinc-800 hover:shadow-lg transition-shadow group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-full border-4 border-slate-50 dark:border-zinc-800 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBymef6KL7UA-ve87DoemaBABS31FhvYCM92AMlF4uT2ZKTm7TST4feKx4cHN0-s71GvAlxSbCqU1AXeawBe97YwmmONiM_099hyRJc1Xq4nZuCuUuXsEIUjjfusG7A_-jCfagm4yG2pQlUdMQ9YO3n_ZFe6-QWQkGZU8TgagQ0ax3Hfj5yrN_5mIlTnLI5tH9HggCvDgqZiG8-Kw8x-fBN4qOVXBUK884MiWMAAtRKAbK7M1dMhiDEcO8C-VJpTuYSZmDVULvoVg')"></div>
+<span class="px-2.5 py-1 bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider rounded">PJ</span>
+</div>
+<div class="mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Juliana Martins</h3>
+<p class="text-sm text-slate-500 dark:text-zinc-400">juliana@nexus.com</p>
+</div>
+<div class="space-y-2 mb-6 border-t border-slate-50 dark:border-zinc-800 pt-4">
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">payments</span>
+<span class="font-medium">R$ 110,00/hr</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">call</span>
+<span class="font-medium text-slate-700 dark:text-zinc-300">(48) 91234-5678</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-slate-600 dark:text-zinc-400">
+<span class="material-symbols-outlined text-slate-400 text-lg">location_on</span>
+<span>Florianópolis, SC</span>
+</div>
+</div>
+<div class="flex items-center gap-2 border-t border-slate-50 dark:border-zinc-800 pt-4">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-slate-50 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-sm font-bold hover:bg-primary/10 hover:text-primary transition-all">
+<span class="material-symbols-outlined text-lg">edit</span> Editar
+                        </button>
+<button class="size-9 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-zinc-800 text-red-500 hover:bg-red-50 transition-all">
+<span class="material-symbols-outlined text-lg">delete</span>
+</button>
+</div>
+</div>
+</div>
+<div class="mt-8 hidden overflow-x-auto bg-white dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-800">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-slate-100 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-800/50">
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Desenvolvedor</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Contrato</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Taxa Horária</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Telefone</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Localização</th>
+<th class="px-6 py-4 text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider text-right">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-zinc-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-zinc-700 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDWiw8skzVzrV0SzjfYFQvU9zIwvQxrdw7oSuBQvXW_smTxf2TZiXJWMi3jGSfmhPFtWE6_2tlf4wvTS_odNU-qGFmHLGhGe4JyY7GIA9WI8BXwWhZisVIHriwUNb5kWhDAzx7B-gjRDG2y3d9YljBNqX2WdA2j0EICP0fvOwXk5mwYZ_SNZsTmkk8swfZXuUUO8xK7ZXNpwv_BwV-8r4kPazHjSPdeswki40jeWG9S22HWbzrPXPE1RNhnigBWg0lsc7Rf3Jm6pQ')"></div>
+<div>
+<p class="text-sm font-bold text-slate-900 dark:text-white">Alexandre Silva</p>
+<p class="text-xs text-slate-500 dark:text-zinc-400">alexandre@nexus.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase tracking-wider">PJ</span>
+</td>
+<td class="px-6 py-4 text-sm font-medium text-slate-700 dark:text-zinc-300">R$ 85,00/hr</td>
+<td class="px-6 py-4 text-sm font-medium text-slate-600 dark:text-zinc-400">(11) 98765-4321</td>
+<td class="px-6 py-4 text-sm text-slate-600 dark:text-zinc-400">São Paulo, SP</td>
+<td class="px-6 py-4 text-right">
+<button class="p-1.5 text-slate-400 hover:text-primary transition-colors"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1.5 text-slate-400 hover:text-red-500 transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-8">
+<p class="text-sm text-slate-500 dark:text-zinc-500">Exibindo <span class="font-bold text-slate-900 dark:text-white">4</span> de <span class="font-bold text-slate-900 dark:text-white">24</span> desenvolvedores</p>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-16 bg-white dark:bg-zinc-900 border-t border-slate-200 dark:border-zinc-800 flex items-center justify-center px-8 z-10 shadow-lg">
+<div class="max-w-7xl w-full flex items-center justify-between">
+<div class="text-sm font-medium text-slate-500 dark:text-zinc-400">
+                    Página <span class="text-slate-900 dark:text-white font-bold">1</span> de <span class="text-slate-900 dark:text-white font-bold">10</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-slate-400 cursor-not-allowed bg-slate-50 dark:bg-zinc-800 rounded-lg border border-slate-200 dark:border-zinc-800 transition-all opacity-60" disabled="">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+                        Anterior
+                    </button>
+<div class="flex items-center gap-1.5 px-2">
+<button class="size-9 flex items-center justify-center rounded-lg bg-primary-600 text-white text-sm font-black shadow-sm">1</button>
+<button class="size-9 flex items-center justify-center rounded-lg text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 text-sm font-bold transition-colors">2</button>
+<button class="size-9 flex items-center justify-center rounded-lg text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 text-sm font-bold transition-colors">3</button>
+<span class="px-1 text-slate-400">...</span>
+<button class="size-9 flex items-center justify-center rounded-lg text-slate-600 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800 text-sm font-bold transition-colors">10</button>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-primary-600 hover:text-white bg-white dark:bg-zinc-900 hover:bg-primary-600 rounded-lg border border-primary-600/20 hover:border-primary-600 transition-all shadow-sm">
+                        Próximo
+                        <span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+<div class="hidden md:flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-zinc-400">
+<span>Ver</span>
+<select class="bg-slate-50 dark:bg-zinc-800 border-none rounded-md py-1 px-3 text-sm focus:ring-1 focus:ring-primary/20 text-slate-900 dark:text-white font-bold">
+<option>10</option>
+<option selected="">20</option>
+<option>50</option>
+</select>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

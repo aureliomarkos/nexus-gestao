@@ -1,0 +1,16 @@
+por favor, de uma analizada neste projeto, eu quero refazer o frontend (admin/index.html) na
+ aba cliente deve aparecer os seguintes campos: nome, pessoa_contato, email, telefone, e a localidade(endereço), insira 
+ícones correspondente ao campo (ex: pessoa contato um ícone user, email um ícone de email ...);
+
+na aba desenvolvedor deve aparecer os seguintes campos: tipo_contrato, nome, email, taxa_horária, telefone, localidade(endereço), insira ícones correspondente ao campo (ex: pessoa contato um ícone user, email um ícone de email ...);
+
+na aba projetos deve aparecer os seguintes campos: nome do projeto, status, orçamento, inicio, prazo/conclusão, insira ícones correspondente ao campo (ex: inicio ícone data, prazo/conclusão ícone data ...);
+
+na aba serviços deve aparecer os seguintes campos: (nome do projeto, se é crítico, tipo_item, descrição, url_acesso, usuario,
+ expiração, insira ícones correspondente ao campo (ex: usuario um ícone user, url_acesso ícone de link ...);
+
+o dashboard deve ter opção de dark mode, e deve seguir o layout exemplo na pasta utils/layout.html.
+
+
+
+

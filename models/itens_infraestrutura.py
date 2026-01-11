@@ -28,6 +28,10 @@ class InfraestruturaItemModel(Base):
     cliente = relationship("ClienteModel", back_populates="infra")
     projeto = relationship("ServicoProjetoModel", back_populates="infra")
 
+    @property
+    def projeto_titulo(self) -> Optional[str]:
+        return self.projeto.titulo if self.projeto else "N/A"
+
 
 # --- ESQUEMAS PYDANTIC (Validação de Dados) ---
 class InfraestruturaBase(BaseModel):
@@ -50,6 +54,7 @@ class InfraestruturaRead(InfraestruturaBase):
     id_cliente: uuid.UUID
     id_desenvolvedor: uuid.UUID
     id_servico: Optional[uuid.UUID]
+    projeto_titulo: Optional[str] = None
     # O Pydantic irá substituir este valor mascarado antes de enviar para o cliente
     referencia_senha: Optional[str] = Field(..., description="Senha criptografada ou Mascarada ('***')")
     

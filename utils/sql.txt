@@ -1,0 +1,81 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.clientes (
+  id_cliente uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  id_endereco uuid,
+  nome character varying NOT NULL,
+  email character varying NOT NULL UNIQUE,
+  telefone character varying,
+  pessoa_contato character varying,
+  documento_fiscal character varying,
+  segmento character varying,
+  status_relacionamento character varying NOT NULL,
+  origem character varying,
+  observacoes text,
+  data_criacao timestamp with time zone DEFAULT now(),
+  data_ultimo_contato timestamp with time zone,
+  CONSTRAINT clientes_pkey PRIMARY KEY (id_cliente),
+  CONSTRAINT clientes_id_endereco_fkey FOREIGN KEY (id_endereco) REFERENCES public.enderecos(id_endereco)
+);
+CREATE TABLE public.desenvolvedores (
+  id_desenvolvedor uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  id_endereco uuid NOT NULL,
+  nome character varying NOT NULL,
+  email character varying NOT NULL UNIQUE,
+  telefone character varying,
+  documento_fiscal character varying NOT NULL,
+  tipo_contrato character varying,
+  taxa_horaria numeric,
+  data_criacao timestamp with time zone DEFAULT now(),
+  CONSTRAINT desenvolvedores_pkey PRIMARY KEY (id_desenvolvedor),
+  CONSTRAINT desenvolvedores_id_endereco_fkey FOREIGN KEY (id_endereco) REFERENCES public.enderecos(id_endereco)
+);
+CREATE TABLE public.enderecos (
+  id_endereco uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  rua character varying NOT NULL,
+  numero character varying NOT NULL,
+  complemento character varying,
+  bairro character varying,
+  cidade character varying NOT NULL,
+  estado character varying NOT NULL,
+  cep character varying NOT NULL,
+  data_criacao timestamp with time zone DEFAULT now(),
+  CONSTRAINT enderecos_pkey PRIMARY KEY (id_endereco)
+);
+CREATE TABLE public.itens_infraestrutura (
+  id_item uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  id_cliente uuid NOT NULL,
+  id_servico uuid,
+  tipo_item character varying NOT NULL,
+  descricao character varying NOT NULL,
+  url_acesso character varying,
+  usuario character varying,
+  referencia_senha character varying,
+  is_critico boolean NOT NULL,
+  data_expiracao timestamp with time zone,
+  notas_acesso text,
+  CONSTRAINT itens_infraestrutura_pkey PRIMARY KEY (id_item),
+  CONSTRAINT itens_infraestrutura_id_cliente_fkey FOREIGN KEY (id_cliente) REFERENCES public.clientes(id_cliente),
+  CONSTRAINT itens_infraestrutura_id_servico_fkey FOREIGN KEY (id_servico) REFERENCES public.servicos_projetos(id_servico)
+);
+CREATE TABLE public.servicos_projetos (
+  id_servico uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  id_cliente uuid NOT NULL,
+  id_desenvolvedor uuid,
+  titulo character varying NOT NULL,
+  escopo text NOT NULL,
+  status_projeto character varying NOT NULL,
+  data_inicio timestamp with time zone,
+  data_limite timestamp with time zone,
+  orcamento numeric,
+  notas_internas text,
+  CONSTRAINT servicos_projetos_pkey PRIMARY KEY (id_servico),
+  CONSTRAINT servicos_projetos_id_cliente_fkey FOREIGN KEY (id_cliente) REFERENCES public.clientes(id_cliente),
+  CONSTRAINT servicos_projetos_id_desenvolvedor_fkey FOREIGN KEY (id_desenvolvedor) REFERENCES public.desenvolvedores(id_desenvolvedor)
+);

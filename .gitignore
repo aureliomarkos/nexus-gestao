@@ -34,7 +34,7 @@ lib64/
 parts/
 sdist/
 var/
-utils/
+utils/  # Comentado temporariamente para acessar layout.html
 *.egg-info/
 .installed.cfg
 *.egg

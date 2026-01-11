@@ -1,0 +1,441 @@
+tabela enderecos:
+primary key: id_endereco
+LABEL/CAMPO: Rua(campo sql: rua - required), Número(campo sql: numero - required), Bairro(campo sql: bairro - required),
+Complemento(campo sql: complemento), Cidade(campo sql: cidade), Estado(campo sql: estado), Cep(campo sql: cep).
+
+tabela desenvolvedores:
+endpoint api: desenvolvedores
+primary key: id_desenvolvedor
+LABEL/CAMPO: Nome(campo sql: nome), Email(campo sql:email), Telefone(campo sql: telefone), Documento Fiscal(campo sql: documento_fiscal),
+Contrato(campo sql: tipo_contrato), Taxa Horária(campo sql: taxa_horaria), agrega tabela endereço - obj: endereco_obj
+
+tabela clientes:
+endpoint api: clientes
+primary key: id_cliente
+LABEL/CAMPO: Nome(campo sql: nome), Email(campo sql: email), Telefone(campo sql: telefone),
+Contato(campo sql: pessoa_contato), Documento Fiscal(campo sql: documento_fiscal),
+Segmento(campo sql: segmento), Origem(campo sql: origem),
+Observações(campo sql: observacoes), agrega tabela endereco - obj: endereco_obj
+
+
+tabela itens_infraestrutura:
+endpoint api: infra
+primary key: id_item
+LABEL/CAMPO: Tipo Ítem(campo sql: tipo_item), Descrição(campo sql: descricao), URL Acesso(campo sql:url_acesso),
+Usuário(campo sql: usuario), Senha(campo sql: referencia_senha), Crítico(campo sql: is_critico, checkbutton: true or false),
+Data Expiração(campo sql: data_expiracao, show calendar), Notas de Acesso(campo sql: notas_acesso),
+Desenvolvedor (campo sql: id_desenvolvedor - mostra todos Desenvolvedores),
+Cliente(campo sql: id_cliente - mostra todos os Clientes).
+
+
+tabela servicos_projetos:
+endpoint api: projetos
+primary key: id_servico
+LABEL/CAMPO: Título(campo sql: titulo), Escopo(campo sql: escopo), Estado do Projeto(campo sql: status_projeto), Data Início(campo sql: data_inicio, show calendar), Data Limite(campo sql: data_limite), Orçamento(campo sql: orcamento, tipo float),
+Notas Internas(campo sql: notas_internas),
+Desenvolvedor (campo sql: id_desenvolvedor - mostra todos Desenvolvedores),
+Cliente(campo sql: id_cliente - mostra todos os Clientes).
+
+
+Objetivo: Gerar um Dashboard Administrativo completo, moderno e responsivo para o aplicativo Nexus - Gestão Centralizada de Infraestrutura.
+
+Formato: O resultado deve ser um ÚNICO ARQUIVO HTML que inclua:
+
+O HTML completo.
+
+Tailwind CSS (via CDN).
+
+Todo o JavaScript necessário para a interatividade e consumo de API (CRUD).
+
+Estética e Design:
+
+Tema: Profissional, limpo, moderno.
+
+Cores: Usar a cor Laranja (orange-600/700) como cor primária para botões, badges, tags e elementos de destaque, conforme solicitado. Usar cinza/neutro (gray) para fundo e texto.
+
+Layout: Sidebar fixa na esquerda para navegação principal. O layout deve ser 100% responsivo (otimizado para Mobile e Desktop).
+
+Integração com API (CRUD Completo):
+
+A URL base da API deve ser definida: const API_BASE_URL = "http://127.0.0.1:8000";.
+
+O JavaScript deve implementar as operações CRUD (GET, POST, DELETE) para o módulo Desenvolvedores e garantir a exibição do ID em cada registro para permitir as ações de Editar e Excluir.
+
+Deve haver uma função genérica de fetchData que lida com erros de rede/HTTP e exibe mensagens de alerta (utilizar modal customizado, NUNCA alert()).
+
+Estrutura de Navegação (Módulos Principais e Endpoints):
+O dashboard deve ter quatro abas principais, cada uma com seu endpoint de listagem correspondente:
+
+Desenvolvedores (GET /desenvolvedores)
+
+Clientes (GET /clientes)
+
+Projetos (GET /projetos)
+
+Infraestrutura (GET /infra)
+
+Módulo 1: Desenvolvedores (CRUD Detalhado)
+
+Visualização: Exibir os dados em um GRID responsivo de cartões e também em uma Tabela (deve haver um toggle entre Grid e Tabela).
+
+Cartões/Tabelas: DEVE conter botões de "Editar" e "Apagar" que ativem as funções POST e DELETE, respectivamente, usando a primary key do registro.
+
+Dados Exibidos (Cartão/Tabela): Nome, Email, Tipo de Contrato (com badge laranja), Taxa Horária e Endereço (Cidade/Estado).
+
+1.1 Formulário Modal de Desenvolvedor (POST)
+
+Label no Form Modal
+
+Campo SQL Correspondente
+
+Notas
+
+Nome
+
+nome
+
+
+
+Email
+
+email
+
+Requerido
+
+Telefone
+
+telefone
+
+
+
+Documento Fiscal
+
+documento_fiscal
+
+(CPF/CNPJ)
+
+Contrato
+
+tipo_contrato
+
+Dropdown (CLT/PJ/Freelancer)
+
+Taxa Horária
+
+taxa_horaria
+
+Tipo Float/Número
+
+Endereço: Rua
+
+endereco_obj.rua
+
+Objeto Aninhado/Agrupado
+
+Endereço: Número
+
+endereco_obj.numero
+
+Objeto Aninhado/Agrupado
+
+Endereço: Bairro
+
+endereco_obj.bairro
+
+Objeto Aninhado/Agrupado
+
+Endereço: Complemento
+
+endereco_obj.complemento
+
+Objeto Aninhado/Agrupado
+
+Endereço: Cidade
+
+endereco_obj.cidade
+
+Objeto Aninhado/Agrupado
+
+Endereço: Estado
+
+endereco_obj.estado
+
+Objeto Aninhado/Agrupado
+
+Endereço: CEP
+
+endereco_obj.cep
+
+Objeto Aninhado/Agrupado
+
+Módulo 2: Clientes (CRUD Detalhado)
+
+Visualização: Exibir os dados em um GRID responsivo de cartões e também em uma Tabela (deve haver um toggle entre Grid e Tabela).
+
+Cartões/Tabelas: DEVE conter botões de "Editar" e "Apagar" que ativem as funções POST e DELETE, respectivamente, usando a primary key do registro.
+
+Dados Exibidos (Cartão/Tabela): Nome, Email, Telefone, Pessoa Contato, Endereço (Cidade/Estado).
+
+2. Clientes (Esqueleto do Formulário)
+
+Label no Form Modal
+
+Campo SQL Correspondente
+
+Notas
+
+Nome
+
+nome
+
+
+
+Email
+
+email
+
+
+
+Telefone
+
+telefone
+
+
+
+Pessoa Contato
+
+pessoa_contato
+
+
+
+Documento Fiscal
+
+documento_fiscal
+
+
+
+Segmento
+
+segmento
+
+
+
+Origem
+
+origem
+
+
+
+Observações
+
+observacoes
+
+Textarea
+
+
+Endereço: Rua
+
+endereco_obj.rua
+
+Objeto Aninhado/Agrupado
+
+Endereço: Número
+
+endereco_obj.numero
+
+Objeto Aninhado/Agrupado
+
+Endereço: Bairro
+
+endereco_obj.bairro
+
+Objeto Aninhado/Agrupado
+
+Endereço: Complemento
+
+endereco_obj.complemento
+
+Objeto Aninhado/Agrupado
+
+Endereço: Cidade
+
+endereco_obj.cidade
+
+Objeto Aninhado/Agrupado
+
+Endereço: Estado
+
+endereco_obj.estado
+
+Objeto Aninhado/Agrupado
+
+Endereço: CEP
+
+endereco_obj.cep
+
+Objeto Aninhado/Agrupado
+
+
+
+Módulo 3: Itens de Infraestrutura (CRUD Detalhado)
+
+Visualização: Exibir os dados em um GRID responsivo de cartões e também em uma Tabela (deve haver um toggle entre Grid e Tabela).
+
+Cartões/Tabelas: DEVE conter botões de "Editar" e "Apagar" que ativem as funções POST e DELETE, respectivamente, usando a primary key do registro.
+
+Dados Exibidos (Cartão/Tabela): Tipo Ítem, Descrição(formatado para exibir VARCHAR(30)), URL Acesso, Usuário, Data Expiração, É Crítico.
+
+3. Itens de Infraestrutura (Esqueleto do Formulário)
+
+Label no Form Modal
+
+Campo SQL Correspondente
+
+Notas
+
+Desenvolvedor
+
+id_desenvolvedor
+
+Mostrar o nome do desenvolvedor
+
+
+Cliente
+
+id_cliente
+
+mostrar o nome do cliente
+
+
+Tipo Ítem
+
+tipo_item
+
+
+
+Descrição
+
+descricao
+
+
+
+URL Acesso
+
+url_acesso
+
+
+
+Usuário
+
+usuario
+
+
+
+Referência Senha
+
+referencia_senha
+
+(Não armazenar a senha em texto puro)
+
+Crítico
+
+is_critico
+
+Checkbox/Toggle (True ou False)
+
+Data Expiração
+
+data_expiracao
+
+Tipo Data (exibir calendário)
+
+Notas de Acesso
+
+notas_acesso
+
+Textarea
+
+
+Módulo 4: Serviços do Projeto (CRUD Detalhado)
+
+Visualização: Exibir os dados em um GRID responsivo de cartões e também em uma Tabela (deve haver um toggle entre Grid e Tabela).
+
+Cartões/Tabelas: DEVE conter botões de "Editar" e "Apagar" que ativem as funções POST e DELETE, respectivamente, usando a primary key do registro.
+
+Dados Exibidos (Cartão/Tabela): Título, Estado Projeto, Data Ínicio, Data Limite, Orçamento.
+
+
+4. Serviços/Projetos (Esqueleto do Formulário)
+
+Label no Form Modal
+
+Campo SQL Correspondente
+
+Notas
+
+Título
+
+titulo
+
+
+
+Desenvolvedor
+
+id_desenvolvedor
+
+Mostrar o nome do desenvolvedor
+
+
+Cliente
+
+id_cliente
+
+mostrar o nome do cliente
+
+
+
+Escopo
+
+escopo
+
+Textarea
+
+Estado do Projeto
+
+status_projeto
+
+Dropdown (Em Andamento, Concluído, etc.)
+
+Data Início
+
+data_inicio
+
+Tipo Data (exibir calendário)
+
+Data Limite
+
+data_limite
+
+Tipo Data (exibir calendário)
+
+Orçamento
+
+orcamento
+
+Tipo Float/Número
+
+Notas Internas
+
+notas_internas
+
+Textarea
+
+Componentes de UI Obrigatórios
+
+Sidebar: Links para os 4 módulos, ícones (Lucide ou SVG).
+
+Header: Título do Dashboard.
+
+Modal: Um componente modal reutilizável para todos os formulários.
+
+Loading State: Indicador de carregamento (Spinner Laranja) visível durante as chamadas da API.
