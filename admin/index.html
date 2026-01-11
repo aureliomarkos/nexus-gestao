@@ -94,6 +94,16 @@
                 if (typeof switchTab === 'function' && !dashboard.dataset.loaded) {
                     switchTab(currentTab);
                     dashboard.dataset.loaded = "true";
+
+                    // Busca dados do usuário logado
+                    apiCall('auth/me')
+                        .then(user => {
+                            if (user && user.nome) {
+                                document.getElementById('user-name').textContent = user.nome;
+                                document.getElementById('user-email').textContent = user.email || '';
+                            }
+                        })
+                        .catch(err => console.error("Erro ao carregar perfil:", err));
                 }
             } else {
                 dashboard.classList.add('hidden');
@@ -201,8 +211,9 @@
                         <span class="material-symbols-outlined">person</span>
                     </div>
                     <div class="overflow-hidden flex-1">
-                        <p class="text-sm font-bold truncate text-slate-900 dark:text-white">Admin Nexus</p>
-                        <p class="text-xs text-slate-500 truncate">admin@nexus.io</p>
+                        <p id="user-name" class="text-sm font-bold truncate text-slate-900 dark:text-white">Admin Nexus
+                        </p>
+                        <p id="user-email" class="text-xs text-slate-500 truncate">admin@nexus.io</p>
                     </div>
                     <button id="logout-btn" title="Sair" class="text-slate-400 hover:text-red-500 transition-colors">
                         <span class="material-symbols-outlined text-xl">logout</span>
