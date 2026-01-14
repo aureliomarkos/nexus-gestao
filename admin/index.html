@@ -103,7 +103,12 @@
                                 document.getElementById('user-email').textContent = user.email || '';
                             }
                         })
-                        .catch(err => console.error("Erro ao carregar perfil:", err));
+                        .catch(err => {
+                            console.error("Erro ao carregar perfil:", err);
+                            // Se falhar ao carregar o perfil (ex: token inválido no boot), limpa e volta pro login
+                            localStorage.removeItem('access_token');
+                            updateScreenState();
+                        });
                 }
             } else {
                 dashboard.classList.add('hidden');
@@ -639,6 +644,14 @@
                 const response = await fetch(url, { ...config, headers });
 
                 if (!response.ok) {
+                    // Se o erro for 401 (Não Autorizado), o token provavelmente expirou
+                    if (response.status === 401) {
+                        console.warn("Token expirado ou inválido. Redirecionando para login...");
+                        localStorage.removeItem('access_token');
+                        updateScreenState();
+                        throw new Error("Sessão expirada. Por favor, faça login novamente.");
+                    }
+
                     // Tenta ler o erro do corpo da resposta, se disponível
                     const errorText = await response.text();
                     let errorMessage = `Erro HTTP ${response.status} ao acessar ${url}`;
