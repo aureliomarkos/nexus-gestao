@@ -26,6 +26,7 @@ coverage.xml
 build/
 develop-eggs/
 dist/
+Scripts/
 downloads/
 eggs/
 .eggs/
