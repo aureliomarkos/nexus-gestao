@@ -16,7 +16,7 @@ from .auth import get_current_user
 router = APIRouter(prefix="/projetos", tags=["Projetos"])
 
 
-@router.post("/", response_model=ServicoProjetoRead, status_code=status.HTTP_201_CREATED, summary="Cria um novo Serviço ou Projeto")
+@router.post("", response_model=ServicoProjetoRead, status_code=status.HTTP_201_CREATED, summary="Cria um novo Serviço ou Projeto")
 def create_projeto(projeto: ServicoProjetoCreate, db: Session = Depends(get_db), current_user: UsuarioModel = Depends(get_current_user)):
     """Cria um novo Serviço ou Projeto"""
     try:
@@ -55,7 +55,7 @@ def create_projeto(projeto: ServicoProjetoCreate, db: Session = Depends(get_db),
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {e}")
 
 
-@router.get("/", response_model=List[ServicoProjetoRead], summary="Lista todos os Serviços e Projetos")
+@router.get("", response_model=List[ServicoProjetoRead], summary="Lista todos os Serviços e Projetos")
 def read_projetos(db: Session = Depends(get_db), current_user: UsuarioModel = Depends(get_current_user)):
     """Lista todos os Serviços e Projetos do usuário"""
     projetos = db.query(ServicoProjetoModel).filter(ServicoProjetoModel.user_id == current_user.id_usuario).all()

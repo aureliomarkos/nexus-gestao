@@ -15,7 +15,7 @@ import uuid
 
 router = APIRouter(prefix="/clientes", tags=["Clientes"])
 
-@router.get("/", response_model=List[ClienteRead], summary="Lista todos os Clientes")
+@router.get("", response_model=List[ClienteRead], summary="Lista todos os Clientes")
 def read_clientes(db: Session = Depends(get_db), current_user: UsuarioModel = Depends(get_current_user)):
     """ Lista todos os clientes """
     clientes = db.query(ClienteModel).filter(ClienteModel.user_id == current_user.id_usuario).all()
@@ -35,7 +35,7 @@ def read_cliente(cliente_id: uuid.UUID, db: Session = Depends(get_db), current_u
     return cliente
 
 
-@router.post("/", response_model=ClienteRead, status_code=status.HTTP_201_CREATED, summary="Cria um novo Cliente e seu Endereço Principal")
+@router.post("", response_model=ClienteRead, status_code=status.HTTP_201_CREATED, summary="Cria um novo Cliente e seu Endereço Principal")
 def create_cliente(cliente: ClienteCreate, db: Session = Depends(get_db), current_user: UsuarioModel = Depends(get_current_user)):
     """ Cria um novo cliente junto com seu endereço principal """
     try:

@@ -56,7 +56,7 @@ app.include_router(auth.router)
 app.mount("/admin", StaticFiles(directory="admin", html=True), name="admin")
 
 
-# Se alguém acessar /redireciona para a tela de login
+# Se alguém acessar / redireciona para /admin
 @app.get("/", include_in_schema=False)
 def admin_index():
     return RedirectResponse("/admin/")

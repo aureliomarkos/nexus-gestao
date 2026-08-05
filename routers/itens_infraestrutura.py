@@ -18,7 +18,7 @@ from models.descriptar_senha import encrypt_password, decrypt_password
 router = APIRouter(prefix="/infra", tags=["Infraestrutura"])
 
 
-@router.post("/", response_model=InfraestruturaRead, status_code=status.HTTP_201_CREATED, summary="Cria um novo Item de Infraestrutura (Criptografa a senha)")
+@router.post("", response_model=InfraestruturaRead, status_code=status.HTTP_201_CREATED, summary="Cria um novo Item de Infraestrutura (Criptografa a senha)")
 def create_infra_item(item: InfraestruturaCreate, db: Session = Depends(get_db), current_user: UsuarioModel = Depends(get_current_user)):
     """Cria um novo Item de Infraestrutura"""
     try:
@@ -66,7 +66,7 @@ def create_infra_item(item: InfraestruturaCreate, db: Session = Depends(get_db),
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {e}")
 
 
-@router.get("/", response_model=List[InfraestruturaRead], summary="Lista todos os Itens de Infraestrutura (Senha Mascarada)")
+@router.get("", response_model=List[InfraestruturaRead], summary="Lista todos os Itens de Infraestrutura (Senha Mascarada)")
 def read_infra_items(db: Session = Depends(get_db), current_user: UsuarioModel = Depends(get_current_user)):
     """Lista todos os Itens de Infraestrutura do usuário"""
     items = db.query(InfraestruturaItemModel).filter(InfraestruturaItemModel.user_id == current_user.id_usuario).all()

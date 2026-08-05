@@ -14,7 +14,7 @@ from .auth import get_current_user
 
 router = APIRouter(prefix="/desenvolvedores", tags=["Desenvolvedores"])
 
-@router.get("/", response_model=List[DesenvolvedorRead], summary="Lista todos os Desenvolvedores")
+@router.get("", response_model=List[DesenvolvedorRead], summary="Lista todos os Desenvolvedores")
 def listar_desenvolvedores(db: Session = Depends(get_db), current_user: UsuarioModel = Depends(get_current_user)):
     """ Lista todos os desenvolvedores """
     desenvolvedores = db.query(DesenvolvedorModel).filter(DesenvolvedorModel.user_id == current_user.id_usuario).all()
@@ -34,7 +34,7 @@ def read_desenvolvedor(dev_id: uuid.UUID, db: Session = Depends(get_db), current
     return desenvolvedor
 
 
-@router.post("/", response_model=DesenvolvedorRead, status_code=status.HTTP_201_CREATED, summary="Cria um novo Desenvolvedor e seu Endereço Legal")
+@router.post("", response_model=DesenvolvedorRead, status_code=status.HTTP_201_CREATED, summary="Cria um novo Desenvolvedor e seu Endereço Legal")
 def create_desenvolvedor(dev: DesenvolvedorCreate, db: Session = Depends(get_db), current_user: UsuarioModel = Depends(get_current_user)):
 
     try:
