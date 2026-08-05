@@ -26,7 +26,7 @@ class ServicoProjetoModel(Base):
     
     # Relacionamentos
     cliente = relationship("ClienteModel", back_populates="projetos")
-    desenvolvedores = relationship("DesenvolvedorModel", back_populates="projetos")
+    desenvolvedor = relationship("DesenvolvedorModel", back_populates="projetos")
     infra = relationship("InfraestruturaItemModel", back_populates="projeto")
 
 

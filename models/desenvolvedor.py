@@ -24,7 +24,7 @@ class DesenvolvedorModel(Base):
     
     # Relacionamentos
     endereco_obj = relationship("EnderecoModel", back_populates="desenvolvedores")
-    projetos = relationship("ServicoProjetoModel", back_populates="desenvolvedores")
+    projetos = relationship("ServicoProjetoModel", back_populates="desenvolvedor")
 
 # --- ESQUEMAS PYDANTIC (Validação de Dados) ---
 class DesenvolvedorBase(BaseModel):
