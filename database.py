@@ -10,7 +10,7 @@ class Base(DeclarativeBase):
 
 
 # Engine de conexão (Sincrona)
-engine = create_engine(DATABASE_URL, echo=False)
+engine = create_engine(DATABASE_URL, echo=False, connect_args={"check_same_thread": False})
 
 SessionLocal = sessionmaker(
     bind=engine,

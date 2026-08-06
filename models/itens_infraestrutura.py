@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, String, DateTime, ForeignKey, text, Boolean
+from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
+from database_types import UUIDType
 from datetime import datetime
 from typing import Optional
 import uuid
@@ -10,11 +10,11 @@ from database import Base
 # --- MODELOS SQLALCHEMY (Mapeamento das Tabelas) ---
 class InfraestruturaItemModel(Base):
     __tablename__ = "itens_infraestrutura"
-    id_item = Column(UUID(as_uuid=True), primary_key=True, default=text("gen_random_uuid()"))
-    user_id = Column(UUID(as_uuid=True), nullable=False)
-    id_cliente = Column(UUID(as_uuid=True), ForeignKey('clientes.id_cliente'), nullable=False)
-    id_servico = Column(UUID(as_uuid=True), ForeignKey('servicos_projetos.id_servico'), nullable=True)
-    id_desenvolvedor = Column(UUID(as_uuid=True), ForeignKey('desenvolvedores.id_desenvolvedor'), nullable=False)
+    id_item = Column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUIDType(), nullable=False)
+    id_cliente = Column(UUIDType(), ForeignKey('clientes.id_cliente'), nullable=False)
+    id_servico = Column(UUIDType(), ForeignKey('servicos_projetos.id_servico'), nullable=True)
+    id_desenvolvedor = Column(UUIDType(), ForeignKey('desenvolvedores.id_desenvolvedor'), nullable=False)
     tipo_item = Column(String(50), nullable=False)
     descricao = Column(String(255), nullable=False)
     url_acesso = Column(String(512), nullable=True)

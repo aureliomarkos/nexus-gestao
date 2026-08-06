@@ -1,6 +1,6 @@
-from sqlalchemy import Column, String, DateTime, text
+from sqlalchemy import Column, String, DateTime
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
+from database_types import UUIDType
 from datetime import datetime
 from pydantic import BaseModel, Field
 from typing import Optional
@@ -10,8 +10,8 @@ from database import Base
 
 class EnderecoModel(Base):
     __tablename__ = "enderecos"
-    id_endereco = Column(UUID(as_uuid=True), primary_key=True, default=text("gen_random_uuid()"))
-    user_id = Column(UUID(as_uuid=True), nullable=False)
+    id_endereco = Column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUIDType(), nullable=False)
     rua = Column(String(255), nullable=False)
     numero = Column(String(50), nullable=False)
     complemento = Column(String(100), nullable=True)

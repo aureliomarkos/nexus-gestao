@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, String, DateTime, ForeignKey, text, Numeric
+from sqlalchemy import Column, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import UUID
+from database_types import UUIDType
 from datetime import datetime
 from typing import Optional
 import uuid
@@ -12,10 +12,10 @@ from database import Base
 # --- MODELOS SQLALCHEMY (Mapeamento das Tabelas) ---
 class ServicoProjetoModel(Base):
     __tablename__ = "servicos_projetos"
-    id_servico = Column(UUID(as_uuid=True), primary_key=True, default=text("gen_random_uuid()"))
-    user_id = Column(UUID(as_uuid=True), nullable=False)
-    id_cliente = Column(UUID(as_uuid=True), ForeignKey('clientes.id_cliente'), nullable=False)
-    id_desenvolvedor = Column(UUID(as_uuid=True), ForeignKey('desenvolvedores.id_desenvolvedor'), nullable=True)
+    id_servico = Column(UUIDType(), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUIDType(), nullable=False)
+    id_cliente = Column(UUIDType(), ForeignKey('clientes.id_cliente'), nullable=False)
+    id_desenvolvedor = Column(UUIDType(), ForeignKey('desenvolvedores.id_desenvolvedor'), nullable=True)
     titulo = Column(String(255), nullable=False)
     escopo = Column(String, nullable=False)
     status_projeto = Column(String(50), nullable=False)
