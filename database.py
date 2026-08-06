@@ -10,7 +10,12 @@ class Base(DeclarativeBase):
 
 
 # Engine de conexão (Sincrona)
-engine = create_engine(DATABASE_URL, echo=False, connect_args={"check_same_thread": False})
+# check_same_thread é exclusivo do SQLite — não enviar para PostgreSQL
+_engine_kwargs = {"echo": False}
+if DATABASE_URL and DATABASE_URL.startswith("sqlite"):
+    _engine_kwargs["connect_args"] = {"check_same_thread": False}
+
+engine = create_engine(DATABASE_URL, **_engine_kwargs)
 
 SessionLocal = sessionmaker(
     bind=engine,
