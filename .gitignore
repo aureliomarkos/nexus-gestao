@@ -48,6 +48,9 @@ utils/  # Comentado temporariamente para acessar layout.html
 .dmypy.json
 dmypy.json
 
+# Database files
+*.db
+
 # VS Code
 .vscode/
 
