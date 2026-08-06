@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
-from config import DATABASE_URL, ENCRYPTION_KEY
+from config import DATABASE_URL, ENCRYPTION_KEY, DEBUG, ENABLE_DOCS
 from routers import (
     cliente,
     desenvolvedor,
@@ -26,7 +26,10 @@ if not ENCRYPTION_KEY or len(ENCRYPTION_KEY) != 44:
 app = FastAPI(
     title="Nexus - Gestão Centralizada de Infraestrutura",
     version="1.0.0",
-    description="Backend completo para gerenciamento de Clientes, Desenvolvedores, Projetos e Infraestrutura, com criptografia de segredos."
+    description="Backend completo para gerenciamento de Clientes, Desenvolvedores, Projetos e Infraestrutura, com criptografia de segredos.",
+    docs_url="/docs" if ENABLE_DOCS else None,
+    redoc_url="/redoc" if ENABLE_DOCS else None,
+    openapi_url="/openapi.json" if ENABLE_DOCS else None,
 )
 
 
